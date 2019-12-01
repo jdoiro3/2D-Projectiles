@@ -1,12 +1,13 @@
 
-# import datetime as dt
+import datetime as dt
+import matplotlib.pyplot as plt
 import math
 import random
-import matplotlib.pyplot as plt
+
+# define gravity
+GRAVITY = 9.8
 
 class Projectile:
-
-    gravity = 9.8
 
     def __init__(self, position_x=0.0, position_y=10.0, velocity=0.0, angle=0.0):
 
@@ -37,8 +38,8 @@ class Projectile:
 
     def updatePosition(self, delta_t):
 
-        delta_x = self.__v_x *delta_t
-        delta_y = self.__v_y *delta_t - (.5 *Projectile.gravity *(delta_t**2))
+        delta_x = self.__v_x*delta_t
+        delta_y = self.__v_y*delta_t - (.5*GRAVITY*(delta_t**2))
 
         new_x = self.__position_x +delta_x
         new_y = self.__position_y +delta_y
@@ -101,7 +102,7 @@ class Gun:
                 x_val = [x[0] for x in bullets[i].history]
                 y_val = [x[1] for x in bullets[i].history]
 
-                plt.scatter(x=x_val, y=y_val, color='r', alpha=.5)
+                plt.scatter(x=x_val, y=y_val, color='r', alpha=.5, s=1)
 
             plt.show()
 
