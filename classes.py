@@ -5,7 +5,7 @@ import math
 import random
 
 # define gravity
-GRAVITY = 9.8
+_GRAVITY = 9.8
 
 class Projectile:
 
@@ -39,7 +39,7 @@ class Projectile:
     def updatePosition(self, delta_t):
 
         delta_x = self.__v_x*delta_t
-        delta_y = self.__v_y*delta_t - (.5*GRAVITY*(delta_t**2))
+        delta_y = self.__v_y*delta_t - (.5*_GRAVITY*(delta_t**2))
 
         new_x = self.__position_x +delta_x
         new_y = self.__position_y +delta_y
@@ -53,9 +53,6 @@ class Projectile:
     def recordPosition(self):
         self.__history.append((self.__position_x, self.__position_y))
 
-    def showPosition(self):
-        plt.scatter(self.__position_x, self.__position_y, color='r')
-        plt.show()
 
 
 
@@ -115,6 +112,46 @@ class Gun:
     @property
     def direction(self):
         return self.__direction
+
+
+from graphics import *
+import time
+import numpy as np
+
+
+def main(velocity, angle):
+    win = GraphWin('Back and Forth', 1000, 1000)
+    win.setCoords(0, 0, 1000000, 100000)
+
+    cir1 = Circle(Point(0, 100), 5)
+    cir1.setFill("black")
+    cir1.draw(win)
+
+    a_line = Line(Point(100, 100), Point(500000, 100))
+    a_line.setFill('red')
+    a_line.draw(win)
+
+    v_x = velocity*math.cos(math.radians(angle))
+    v_y = velocity*math.sin(math.radians(angle))
+    print(v_x, v_y)
+
+    delta_t = 0.0
+    while cir1.getCenter().getY() > 99.0:
+        delta_t += .1
+        delta_x = v_x*delta_t
+        delta_y = v_y*delta_t - (.5*_GRAVITY*(delta_t**2))
+
+        cir1.move(delta_x, delta_y)
+        time.sleep(.05)
+
+    win.getMouse()
+    win.close()
+
+
+
+
+main(100,50)
+
 
 
 
