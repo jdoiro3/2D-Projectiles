@@ -1,15 +1,13 @@
 from graphics import *
 from graphics import _root
-from math import cos, sin, tan, sqrt, pow
-from math import radians
+from math import cos, sin, tan, sqrt, pow, radians
 import numpy as np
-from graphics import *
 import time
 
 _gravity = 9.81
 
 
-class Projectile(Point):
+class Projectile(Circle):
 
     def __init__(self, v, theta, x=0.0, y=0.0):
         self.initial_v = v
@@ -21,7 +19,7 @@ class Projectile(Point):
         self.y = y
         self.max_height = (pow(self.initial_v,2) * pow(sin(radians(theta)),2))/(2*_gravity)
         self.range = (pow(self.initial_v,2) * (sin(radians(2*theta)))) / _gravity
-        Point.__init__(self, self.x, self.y)
+        Circle.__init__(self, Point(self.x, self.y), 20)
 
     def __str__(self):
         return "Projectile instance located at ({self.x},{self.pos_y})".format(self=self)
@@ -62,17 +60,20 @@ class Projectile(Point):
 def main(v, angle):
     p = Projectile(v, angle)
     win = GraphWin('Projectile', 900, 400)
-    win.setCoords(0, 0, p.range+20, p.max_height+20)
+    win.setCoords(0, 0, 10000, 10000)
 
     p.draw(win)
+    p.setFill("black")
+
+    time.sleep(3)
 
     t = 0.0
     dt = .1
-    while p.x <= p.range:
+    while (p.x <= p.range and p.x <= 10000):
         p.move(t, dt)
         t += dt
-        time.sleep(.02)
+        time.sleep(.01)
 
     win.close()
 
-main(200,40)
+main(420,75)
