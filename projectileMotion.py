@@ -59,7 +59,7 @@ class Projectile(Circle):
 
 def main(v, angle):
     p = Projectile(v, angle)
-    win = GraphWin('Projectile', 900, 400)
+    win = GraphWin('Projectile', 5000, 1000)
     win.setCoords(0, 0, 10000, 10000)
 
     p.draw(win)
