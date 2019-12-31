@@ -9,7 +9,7 @@ _gravity = 9.81
 
 class Projectile(Circle):
 
-    def __init__(self, v, theta, x=0.0, y=0.0):
+    def __init__(self, v, theta, size=30, x=0.0, y=0.0):
         self.initial_v = v
         self.v = v
         self.v_x = self.v * cos(radians(theta)) # constant
@@ -19,7 +19,7 @@ class Projectile(Circle):
         self.y = y
         self.max_height = (pow(self.initial_v,2) * pow(sin(radians(theta)),2))/(2*_gravity)
         self.range = (pow(self.initial_v,2) * (sin(radians(2*theta)))) / _gravity
-        Circle.__init__(self, Point(self.x, self.y), 55)
+        Circle.__init__(self, Point(self.x, self.y), size)
 
     def __str__(self):
         return "Projectile instance located at ({self.x},{self.pos_y})".format(self=self)
@@ -65,7 +65,7 @@ class Projectile(Circle):
             t += dt
             time.sleep(.05)
 
-class Cannon(Rectangle):
+class Cannon(Line):
 
     def __init__(self):
         pass
@@ -73,11 +73,14 @@ class Cannon(Rectangle):
 
 def main():
 
+    length = 500
+
     win = GraphWin('Projectile', 1000, 800)
     win.setCoords(0, 0, 10000, 10000)
     theta = 45
-    x2 = 1000*cos(radians(theta))
-    y2 = 1000*sin(radians(theta))
+    velocity = 0.0
+    x2 = length*cos(radians(theta))
+    y2 = length*sin(radians(theta))
     ln = Line(Point(0,0),Point(x2,y2))
     ln.draw(win)
 
@@ -86,23 +89,29 @@ def main():
         if keyboard.is_pressed('w'):
             ln.undraw()
             theta += 1
-            x2 = 1000*cos(radians(theta))
-            y2 = 1000*sin(radians(theta))
-            print(x2)
+            x2 = length*cos(radians(theta))
+            y2 = length*sin(radians(theta))
             ln = Line(Point(0,0), Point(x2,y2))
             ln.draw(win)
             time.sleep(.1)
         if keyboard.is_pressed('s'):
             ln.undraw()
             theta -= 1
-            x2 = 1000*cos(radians(theta))
-            y2 = 1000*sin(radians(theta))
+            x2 = length*cos(radians(theta))
+            y2 = length*sin(radians(theta))
             ln = Line(Point(0, 0), Point(x2, y2))
             ln.draw(win)
             time.sleep(.1)
         if keyboard.is_pressed('f'):
-            p = Projectile(200, theta, x=ln.getP2().getX(), y=ln.getP2().getY())
+            p = Projectile(v=velocity, theta=theta)
             p.launch(win)
+            velocity = 0.0
+        if keyboard.is_pressed('space'):
+            if velocity < 500.0:
+                velocity += 1.0
+                time.sleep(.001)
+            print("power =",velocity)
+
 
         mouse = win.checkMouse()
 
