@@ -3,7 +3,7 @@ import projectile_classes as p
 
 def main():
     
-    win = g.GraphWin('Projectile', 1000, 600)
+    win = GraphWin('Projectile', 1000, 600)
     win.setCoords(0, 0, 10000, 10000)
 
     lan = p.Launcher(30,500)

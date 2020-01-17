@@ -137,7 +137,7 @@ class Launcher(Line):
         self.projectiles_airborn.append(p)
 
     def drop_grounded_projectiles(self):
-        
+        self.projectiles_airborn = [proj for proj in self.projectiles_airborn if proj.grounded != True]
 
     def update_projectiles(self):
         self.drop_grounded_projectiles()
