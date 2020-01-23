@@ -7,7 +7,7 @@ class Projectile(Circle):
     '''A projectile that can be fired by a launcher'''
 
     # class attribute that represents the difference in time between each call to move()
-    _dt = .5
+    _dt = .1
 
     def __init__(self, v, theta, size=30, x=0.0, y=0.0):
         # set the time to dt for each instance. This is private...
@@ -82,24 +82,22 @@ class Projectile(Circle):
 
 class Launcher(Line):
 
+    max_power = 1000
+
     def __init__(self, theta, length):
         self.theta = theta
-        self.text = str(theta)+" degrees"
         self.length = length
-        self.position_x = length*cos(radians(theta))
-        self.position_y = length*sin(radians(theta))
+        self.x2 = length*cos(radians(theta))
+        self.y2 = length*sin(radians(theta))
         self.power = 0.0
         self.projectiles_airborn = []
-        Line.__init__(self, Point(0,0), Point(self.position_x, self.position_y))
+        Line.__init__(self, Point(0,0), Point(self.x2, self.y2))
 
 
     def _update_theta(self, theta):
-        self.position_x = self.length*cos(radians(theta))
-        self.position_y = self.length*sin(radians(theta))
-        Line.__init__(self, Point(0,0), Point(self.position_x, self.position_y))
-
-    def _update_text(self, new_text):
-        self.text = new_text
+        self.x2 = self.length*cos(radians(theta))
+        self.y2 = self.length*sin(radians(theta))
+        Line.__init__(self, Point(0,0), Point(self.x2, self.y2))
 
     def move_up(self, win):
         self.undraw()
@@ -114,22 +112,18 @@ class Launcher(Line):
         self.draw(win)
 
     def increase_power(self):
-        if self.power > 1000:
+        if self.power+10.0 > self.max_power:
             pass
         else:
-            self.power += 20.0
+            self.power += 10.0
             # draw to the power bar
 
     def decrease_power(self):
-        if self.power < 0.0:
+        if self.power-10.0 < 0.0:
             self.power = 0.0
         else:
-            self.power -= 20.0
+            self.power -= 10.0
             # draw to power bar
-
-    def decrease_power(self):
-        self.power += -1
-        # draw to the power bar
 
     def launch(self, win):
         p = Projectile(self.power, self.theta)
@@ -143,3 +137,33 @@ class Launcher(Line):
         self.drop_grounded_projectiles()
         for p in self.projectiles_airborn:
             p.move()
+
+
+class Power_Bar(Rectangle):
+
+    max_power = 1000
+
+    def __init__(self, win, screen_cords, color, start_pos=1, end_pos=2):
+        self.start_pos = start_pos
+        self.end_pos = end_pos
+        self.color = color
+        self.win = win
+        self.x_start = (self.start_pos/4)*screen_cords
+        self.x_end = (end_pos/4)*screen_cords
+
+        Rectangle.__init__(self, Point(self.x_start, 200), Point(self.x_end, 400))
+        self.draw(self.win)
+
+        self.power_level = Rectangle(self.getP1(), Point(self.p1.getX(), self.p1.getY()))
+        if self.color:
+            self.power_level.setFill(self.color)
+        self.power_level.draw(self.win)
+
+    def move_power_level(self, power, win):
+        middle = ((self.x_end - self.x_start)/2)+self.x_start
+        const = 2*(middle - self.x_start)
+        x = ((power/self.max_power)*const)+self.x_start
+        y = self.p2.getY()
+        self.power_level.undraw()
+        self.power_level.p2 = Point(x,y)
+        self.power_level.draw(self.win)
